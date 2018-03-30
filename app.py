@@ -187,9 +187,6 @@ def forcast_range():
     data, dates = get_per_day_prediction_data(from_date,to_date)
     return render_template('forcasts.html', load_data=zip(data, dates))
 
-    # print(request.form['to_date'])
-    # from_date = request.form[
-
 
 @app.route('/home/', methods=['GET'])
 def home():
