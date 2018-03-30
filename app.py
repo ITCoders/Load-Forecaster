@@ -4,10 +4,16 @@ from flask import jsonify, render_template
 app = Flask(__name__)
 
 
-@app.route('/hello/', methods=['GET'])
-def hello():
+@app.route('/forcasts/', methods=['GET'])
+def forcasts():
     print ("hello")
-    return render_template('test.html')
+    return render_template('forcasts.html')
+
+
+@app.route('/home/', methods=['GET'])
+def home():
+    print("home")
+    return render_template('home.html')
 
 if __name__ == '__main__':
     app.run()

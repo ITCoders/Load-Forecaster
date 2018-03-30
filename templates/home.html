@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Load Forcaster</title>
+
+    <!-- Bootstrap -->
+    <script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<style type="text/css">
+    .container {
+        width: 100%;
+        height: 100vh;
+    }
+
+    #map {
+        height: 80vh;
+        width: 100%;
+    }
+
+    #form-layout {
+        height: 80vh;
+    }
+
+    form {
+        width: 100%;
+    }
+
+    .navbar-custom {
+        background-color: #fae1cb;
+    }
+</style>
+<body>
+<div class="container">
+    <nav class="navbar navbar-custom">
+        <div class="container-fluid">
+
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">
+                    Load ForeCaster
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/api/drivers/generate">Reset</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <center>
+      <form class="form-inline">
+          <label for="city-selector">Select City</label>
+          <select class="js-example-basic-single col-xs-12 col-md-4 col-sm-4" name="state" id="city-selector">
+            <option value="AL">Alabama</option>
+            <option value="WY">Wyoming</option>
+          </select>
+      </form>
+    </center>
+    <div class="row">
+        <div class="col-xs-12 col-md-6 col-sm-6" id="form-layout">
+          <div id="map"></div>
+
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+    $('.js-example-basic-single').select2();
+});
+</script>
+<script>
+    var map;
+    var marker;
+    var set_marker;
+    var markers_list = [];
+    function initMap() {
+        var geocoder = new google.maps.Geocoder;
+        var infowindow = new google.maps.InfoWindow();
+        var myLatlng = {lat: 23.173244, lng: 72.813143};
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: myLatlng
+        });
+        map.setZoom(10);
+        var input = document.getElementById('autocomplete');
+        var src = document.getElementById('src');
+        var dest = document.getElementById('dest');
+        function getChangePlace(autocomplete, input) {
+            var place = autocomplete.getPlace();
+            console.log(place.name);
+            if (!place.geometry) {
+                return;
+            }
+            if (place.geometry.viewport) {
+                map.fitBounds(place.geometry.viewport);
+            } else {
+                map.setCenter(place.geometry.location);
+                map.setZoom(10);
+            }
+            marker.setPlace(({
+                placeId: place.place_id,
+                location: place.geometry.location
+            }));
+            var data_lat = document.createAttribute('data-lat');
+            var data_lng = document.createAttribute('data-lng');
+            var data_placeId = document.createAttribute('data-placeId');
+            var data_placename = document.createAttribute('data-placename');
+            data_lat.value = place.geometry.location.lat();
+            data_lng.value = place.geometry.location.lng();
+            data_placeId.value = place.place_id;
+            data_placename.value = place.name;
+            input.setAttributeNode(data_lat);
+            input.setAttributeNode(data_lng);
+            input.setAttributeNode(data_placeId);
+            input.setAttributeNode(data_placename);
+        }
+        function geocodeLatLng(geocoder,lat, lng, map, infowindow) {
+            var latlng = {lat: parseFloat(lat), lng: parseFloat(lng)};
+            geocoder.geocode({'location': latlng}, function(results, status) {
+                if (status === 'OK') {
+                    if (results[1]) {
+                        var marker = new google.maps.Marker({
+                            position: latlng,
+                            map: map
+                        });
+                        console.log("hello");
+                        infowindow.setContent(results[1].formatted_address);
+                        infowindow.open(map, marker);
+                        marker.setMap(null);
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    window.alert('Geocoder failed due to: ' + status);
+                }
+            });
+        }
+        map.addListener('dblclick', function (e) {
+            console.log(e.latLng.lng());
+            geocodeLatLng(geocoder, e.latLng.lat(), e.latLng.lng(), map, infowindow);
+        });
+        google.maps.event.addListener(map, 'click', function(event) {
+      placeMarker(event.latLng);
+    });
+
+    function placeMarker(location) {
+        try {
+          set_marker.setMap(null);
+        } catch(err) {
+          console.log(err);
+        }
+      var marker = new google.maps.Marker({
+        position: location,
+        map: map
+      });
+        set_marker = marker;
+
+    }
+    markers_list.push({'lat': 23.2156, 'lng': 72.6369, 'city': 'Gandhinagar'});
+    markers_list.push({'lat': 23.0225, 'lng': 72.5714, 'city': 'Ahmedabad'});
+    for(var i=0;i<markers_list.length; i++){
+        console.log(markers_list[i].lat);
+        console.log(new google.maps.LatLng(markers_list[i]['lat'], markers_list[i]['lng']));
+        var tmp_marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(markers_list[i].lat, markers_list[i].lng),
+                    map: map,
+                    title: 'Hello World!'
+                });
+        tmp_marker.setMap(map);
+        google.maps.event.addListener(tmp_marker, 'click', marker_listener);
+
+    }
+    }
+    var marker_listener = function (e) {
+        console.log(e);
+    }
+
+</script>
+<script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASz6Gqa5Oa3WialPx7Z6ebZTj02Liw-Gk&callback=initMap&libraries=places">
+</script>
+</body>
+</html>
