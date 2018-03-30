@@ -122,9 +122,15 @@ def get_per_day_prediction_data(start_date=(2008, 6, 30), end_date=(2008, 7, 20)
     i_date = st
     dates = []
     while i_date < end:
-        dates.append((i_date + timedelta(hours=24)).strftime('%Y-%m-%d'))
+        dates.append((i_date).strftime('%Y-%m-%d'))
         i_date = i_date + timedelta(hours=24)
+    dates.append(end.strftime('%Y-%m-%d'))
     return per_day, dates
+
+
+def get_one_day_load_prediction(date=(2008, 6, 30)):
+    load, date =get_per_day_prediction_data(start_date=date,end_date=date)
+    return load[0]
 
 
 zone_id = 2
@@ -176,16 +182,17 @@ def forcasts():
     # start_date = (2006, 1, 2)
     # end_date = (2006, 1, 31)
     data, dates = get_per_day_prediction_data()
-    return render_template('forcasts.html', load_data=zip(data, dates))
+    next_day_load = get_one_day_load_prediction()
+    return render_template('forcasts.html', load_data=zip(data, dates), next_day_load=next_day_load,next_day='2008-6-30')
 
 
 @app.route('/forcast_range/', methods=['POST'])
 def forcast_range():
-    print(request.__dir__())
     from_date = [int(i) for i in request.form['from_date'].split('-')]
     to_date = [int(i) for i in request.form['to_date'].split('-')]
     data, dates = get_per_day_prediction_data(from_date,to_date)
-    return render_template('forcasts.html', load_data=zip(data, dates))
+    next_day_load = get_one_day_load_prediction()
+    return render_template('forcasts.html', load_data=zip(data, dates), next_day_load=next_day_load,next_day='2008-6-30')
 
 
 @app.route('/home/', methods=['GET'])
