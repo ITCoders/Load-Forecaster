@@ -11,11 +11,11 @@
 
       // Create the data table.
       var data = google.visualization.arrayToDataTable([
-          ['Year', 'Predicted', 'Actual'],
-          ['2004',  1000,      900],
-          ['2005',  1170,      1250],
-          ['2006',  660,       700],
-          ['2007',  1030,      1100]
+          ['Date', 'Predicted', 'Actual'],
+          ['14-03-2018',  1000,      900],
+          ['15-03-2018',  1170,      1250],
+          ['16-03-2018',  660,       700],
+          ['17-03-2018',  1030,      1100]
       ]);
       // var height = $('body').height();
       // var width = $('body').width();
