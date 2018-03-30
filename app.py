@@ -171,16 +171,18 @@ model.load_weights('static/model_weights/best_RNN_weights.hdf5')
 app = Flask(__name__)
 
 
-@app.route('/hello/', methods=['GET'])
-def hello():
+@app.route('/forcasts/', methods=['GET'])
+def forcasts():
     # start_date = (2006, 1, 2)
     # end_date = (2006, 1, 31)
     data, dates = get_per_day_prediction_data()
-    # data['sum'] = data.sum(axis=1)
+    return render_template('forcasts.html', load_data=zip(data, dates))
 
-    print(data)
-    return render_template('test.html', load_data=zip(data, dates))
 
+@app.route('/home/', methods=['GET'])
+def home():
+    print("home")
+    return render_template('home.html')
 
 if __name__ == '__main__':
     app.run()
