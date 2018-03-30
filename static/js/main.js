@@ -10,13 +10,13 @@
       function drawChart() {
 
       // Create the data table.
-      var data = google.visualization.arrayToDataTable([
-          ['Date', 'Predicted', 'Actual'],
-          ['14-03-2018',  1000,      900],
-          ['15-03-2018',  1170,      1250],
-          ['16-03-2018',  660,       700],
-          ['17-03-2018',  1030,      1100]
-      ]);
+      // var data = google.visualization.arrayToDataTable([
+      //     ['Date', 'Predicted', 'Actual'],
+      //     ['14-03-2018',  1000,      900],
+      //     ['15-03-2018',  1170,      1250],
+      //     ['16-03-2018',  660,       700],
+      //     ['17-03-2018',  1030,      1100]
+      // ]);
       // var height = $('body').height();
       // var width = $('body').width();
       //
