@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask import jsonify, render_template
 import pandas
 import numpy
@@ -177,6 +177,18 @@ def forcasts():
     # end_date = (2006, 1, 31)
     data, dates = get_per_day_prediction_data()
     return render_template('forcasts.html', load_data=zip(data, dates))
+
+
+@app.route('/forcast_range/', methods=['POST'])
+def forcast_range():
+    print(request.__dir__())
+    from_date = [int(i) for i in request.form['from_date'].split('-')]
+    to_date = [int(i) for i in request.form['to_date'].split('-')]
+    data, dates = get_per_day_prediction_data(from_date,to_date)
+    return render_template('forcasts.html', load_data=zip(data, dates))
+
+    # print(request.form['to_date'])
+    # from_date = request.form[
 
 
 @app.route('/home/', methods=['GET'])
