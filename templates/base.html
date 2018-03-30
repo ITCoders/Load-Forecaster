@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
   <meta charset="UTF-8">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -22,11 +22,13 @@
       </ul>
     </div>
   </nav>
+  <div class="container">
   <ul class="sidenav" id="mobile-demo">
     <li><a href="/logout">Logout</a></li>
   </ul>
   {% block content %}
   {% endblock %}
+</div>
 </body>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/vendor/materialize.min.js') }}"></script>
@@ -37,5 +39,4 @@
 </script>
 {% block javascript %}
 {% endblock %}
-
 </html>

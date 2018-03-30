@@ -1,17 +1,19 @@
 #chart_div {
-    width: 46%;
     display: flex;
     float: left;
-    height: 400px;
-
 }
 #result{
-    width: 46%;
     display: flex;
     float: right;
-    height: 400px;
-
 }
+
 .row1{
     height: 400px;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    width: 100%;
+}
+
+.big{
+    font-size: xx-large;
 }

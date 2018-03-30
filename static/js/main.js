@@ -17,18 +17,33 @@
           ['2006',  660,       1120],
           ['2007',  1030,      540]
       ]);
-      var height = screen.height;
-      var width = screen.width;
-
+      // var height = $('body').height();
+      // var width = $('body').width();
+      //
+      // if (height > width){
+      //     var chart_height = height*0.7;
+      //     var chart_width = width;
+      //     $('#result').css('width', '100%');
+      //     $('#chart_div').css('width', '100%');
+      //
+      // }
+      // else {
+      //     var chart_width = width*0.46;
+      //     var chart_height = chart_width*0.66;
+      //     $('#result').css('width', chart_width);
+      //     $('#result').css('height', chart_height);
+      // }
+      // console.log(height, width, chart_height, chart_width);
       // Set chart options
       var options = {'title':'How Much Pizza I Ate Last Night',
+                    // 'height': chart_height,
+                    // 'width': chart_width,
                     'animation':{
                         'duration': 1000,
                         'easing': 'out',
                         'startup': true
                     }};
 
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+      var chart = new google.visualization.LineChart(document.getElementById('map'));
       chart.draw(data, options);
     }
