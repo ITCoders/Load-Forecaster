@@ -1,0 +1,17 @@
+#chart_div {
+    width: 46%;
+    display: flex;
+    float: left;
+    height: 400px;
+
+}
+#result{
+    width: 46%;
+    display: flex;
+    float: right;
+    height: 400px;
+
+}
+.row1{
+    height: 400px;
+}
