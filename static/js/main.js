@@ -11,11 +11,11 @@
 
       // Create the data table.
       var data = google.visualization.arrayToDataTable([
-          ['Year', 'Sales', 'Expenses'],
-          ['2004',  1000,      400],
-          ['2005',  1170,      460],
-          ['2006',  660,       1120],
-          ['2007',  1030,      540]
+          ['Year', 'Predicted', 'Actual'],
+          ['2004',  1000,      900],
+          ['2005',  1170,      1250],
+          ['2006',  660,       700],
+          ['2007',  1030,      1100]
       ]);
       // var height = $('body').height();
       // var width = $('body').width();
@@ -35,7 +35,7 @@
       // }
       // console.log(height, width, chart_height, chart_width);
       // Set chart options
-      var options = {'title':'How Much Pizza I Ate Last Night',
+      var options = {'title':'Load History of Gandhinagar',
                     // 'height': chart_height,
                     // 'width': chart_width,
                     'animation':{

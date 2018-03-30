@@ -12,28 +12,33 @@
 
 </head>
 <style type="text/css">
-    .container{
+    .container {
         width: 100%;
         height: 100vh;
     }
-    #map{
+
+    #map {
         height: 80vh;
         width: 100%;
     }
-    #form-layout{
+
+    #form-layout {
         height: 80vh;
     }
-    form{
+
+    form {
         width: 100%;
     }
+
     .navbar-custom {
-        background-color: #E0F7FA;
+        background-color: #fae1cb;
     }
 </style>
 <body>
 <div class="container">
     <nav class="navbar navbar-custom">
         <div class="container-fluid">
+
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
@@ -42,7 +47,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="/">
-                    BookCab
+                    Load ForeCaster
                 </a>
             </div>
 
@@ -54,19 +59,49 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
+      <form class="form-inline">
+    <input class="form-control mr-sm-5" type="search" placeholder="Select City" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+  </form>
     <div class="row">
         <div class="col-xs-12 col-md-6 col-sm-6">
-                <div id="map"></div>
-
+            <div id="map"></div>
+            <div>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="range-from">From</label>
+                        <input type="date" id="range-from">
+                    </div>
+                    <div class="form-group">
+                        <label for="range-to">To</label>
+                        <input type="date" id="range-to">
+                    </div>
+                    <button class="form-control">
+                        Change Date Range
+                    </button>
+                </form>
+            </div>
         </div>
         <div class="col-xs-12 col-md-6 col-sm-6" id="form-layout">
             <div class="col-xs-12 col-md-6 col-sm-6" id="cab-book-msg">
-                <h1 id="cab-book-msg-header">
-                    Usage: 230MW
+                <h1 id="load-estimate">
+                    Usage: 230KW
                 </h1>
-                <p id="cab-book-msg-message">
+                <p id="estimate-place">
+                    Place: Gandhinagar
+                </p>
+                <p id="estimate-date">
                     Date: 23/10/2018
                 </p>
+
+                <form>
+                    <div class="form-group">
+                        <label for="date-picker">
+                            Change Date
+                        </label>
+                        <input type="date" id="date-picker" class="form-control">
+                    </div>
+                </form>
             </div>
 
         </div>
@@ -75,6 +110,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
