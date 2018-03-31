@@ -192,6 +192,17 @@ def forcast_range():
     return render_template('forcasts.html', load_data=zip(data, dates), next_day_load=next_day_load,next_day='2008-6-30')
 
 
+@app.route('/forcast_one_day/', methods=['POST'])
+def forcast_one_day():
+    print(request)
+    print(request.form)
+    print(request.json)
+    day = [int(i) for i in request.json['day'].split('-')]
+    print(day)
+    load = get_one_day_load_prediction(date=day)
+    print(load)
+    return jsonify(load=str(load))
+
 @app.route('/home/', methods=['GET'])
 def home():
     print("home")
