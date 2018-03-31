@@ -5,6 +5,7 @@ import numpy
 from sklearn.preprocessing import MinMaxScaler
 from pandas.tools.plotting import scatter_matrix
 import matplotlib.pyplot as plt
+import datetime as dt
 from datetime import datetime, timedelta
 from keras.models import Sequential
 from keras.layers import Dense
@@ -142,7 +143,6 @@ def get_data_between_dates(start_date, end_date, zone_id=3):
                                                                                        start_date[2])]
     return b
 
-
 def get_per_hour_data(start_date=(2006, 1, 2), end_date=(2006, 3, 20), zone_id=3):
     scaled_preprocessed_load_data_with_date = get_preprocessed_load_data_with_date(zone_id=zone_id)
     # print(scaled_preprocessed_load_data_with_date)
@@ -151,7 +151,11 @@ def get_per_hour_data(start_date=(2006, 1, 2), end_date=(2006, 3, 20), zone_id=3
             "%Y-%m-%d"):
         input_data = X_test[-1]
         num_days = 15
+        last_date = scaled_preprocessed_load_data_with_date.loc[scaled_preprocessed_load_data_with_date.index[-1]]['date'].split('-')
+        last_date = dt.date(int(last_date[0]), int(last_date[1]), int(last_date[2]))
+        temp = (dt.date(start_date[0], start_date[1], start_date[2]) - last_date).days
     else:
+        temp=0
         print('It entered here')
         data = plot_data_between_dates(start_date, end_date)
         scaled_preprocessed_load_data_with_date.drop(['date'], inplace=True, axis=1)
@@ -159,7 +163,7 @@ def get_per_hour_data(start_date=(2006, 1, 2), end_date=(2006, 3, 20), zone_id=3
         num_days = len(data.index)
     input_data = numpy.asarray(numpy.reshape(numpy.asarray(input_data), (1, window_size, 24)))
     outputs = predict_future(model, input_data, num_days)
-    return outputs
+    return outputs[int(temp):]
 
 
 def get_per_day_prediction_data(start_date, end_date, zone_id=3):
