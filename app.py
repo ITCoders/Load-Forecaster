@@ -14,6 +14,7 @@ import keras
 
 load_data_with_date = pandas.DataFrame
 
+
 def remove_comma(df: pandas.DataFrame):
     for column in df.columns:
         df[column].replace(regex=True, inplace=True, to_replace=r',', value='')
@@ -35,7 +36,6 @@ def scale_data(data):
     return temp_data
 
 
-
 def get_raw_load_data():
     load_data = pandas.read_csv('static/data/Load_history.csv')
     return load_data
@@ -43,7 +43,7 @@ def get_raw_load_data():
 
 def get_preprocessed_load_data(zone_id):
     raw_load_data = get_raw_load_data()
-    zone_load_data = raw_load_data[raw_load_data.zone_id==zone_id]
+    zone_load_data = raw_load_data[raw_load_data.zone_id == zone_id]
     preprocessed_load_data = preprocess_data(zone_load_data)
     preprocessed_load_data = scale_data(preprocessed_load_data)
     return preprocessed_load_data
@@ -52,16 +52,17 @@ def get_preprocessed_load_data(zone_id):
 def get_preprocessed_load_data_with_date(zone_id):
     raw_data = get_raw_load_data()
     load_data_with_date = raw_data.copy()
-    load_data_with_date = load_data_with_date[load_data_with_date.zone_id==zone_id]
+    load_data_with_date = load_data_with_date[load_data_with_date.zone_id == zone_id]
     load_data_with_date.dropna(axis=0, how='any', inplace=True)
     load_data_with_date.reset_index(drop=True, inplace=True)
-    date_str = load_data_with_date['year'].map(str) + '-' + load_data_with_date['month'].map(str) + '-' + load_data_with_date['day'].map(str)
+    date_str = load_data_with_date['year'].map(str) + '-' + load_data_with_date['month'].map(str) + '-' + \
+               load_data_with_date['day'].map(str)
     load_data_with_date.drop(['zone_id', 'year', 'month', 'day'], axis=1, inplace=True)
     remove_comma(load_data_with_date)
     load_data_with_date = load_data_with_date.apply(pandas.to_numeric)
     scaled_preprocessed_load_data_with_date = scale_data(load_data_with_date)
     scaled_preprocessed_load_data_with_date['date'] = date_str
-    #print(scaled_preprocessed_load_data_with_date)
+    # print(scaled_preprocessed_load_data_with_date)
     return scaled_preprocessed_load_data_with_date
 
 
@@ -133,17 +134,21 @@ def plot_future_prediction(outputs):
     plt.show()
 
 
-def get_data_between_dates(start_date, end_date,zone_id=3):
+def get_data_between_dates(start_date, end_date, zone_id=3):
     scaled_preprocessed_load_data_with_date = get_preprocessed_load_data_with_date(zone_id=zone_id)
-    a = scaled_preprocessed_load_data_with_date[scaled_preprocessed_load_data_with_date['date'].apply(lambda date: datetime.strptime(date, "%Y-%m-%d")) < datetime(end_date[0], end_date[1], end_date[2])]
-    b = a[a['date'].apply(lambda date: datetime.strptime(date, "%Y-%m-%d")) > datetime(start_date[0], start_date[1], start_date[2])]
+    a = scaled_preprocessed_load_data_with_date[scaled_preprocessed_load_data_with_date['date'].apply(
+        lambda date: datetime.strptime(date, "%Y-%m-%d")) < datetime(end_date[0], end_date[1], end_date[2])]
+    b = a[a['date'].apply(lambda date: datetime.strptime(date, "%Y-%m-%d")) > datetime(start_date[0], start_date[1],
+                                                                                       start_date[2])]
     return b
 
 
-def get_per_hour_data(start_date = (2006, 1, 2), end_date =(2006, 3, 20),zone_id=3):
+def get_per_hour_data(start_date=(2006, 1, 2), end_date=(2006, 3, 20), zone_id=3):
     scaled_preprocessed_load_data_with_date = get_preprocessed_load_data_with_date(zone_id=zone_id)
-    #print(scaled_preprocessed_load_data_with_date)
-    if datetime(start_date[0], start_date[1], start_date[2]) > datetime.strptime(scaled_preprocessed_load_data_with_date.loc[scaled_preprocessed_load_data_with_date.index[-1]]['date'], "%Y-%m-%d"):
+    # print(scaled_preprocessed_load_data_with_date)
+    if datetime(start_date[0], start_date[1], start_date[2]) > datetime.strptime(
+            scaled_preprocessed_load_data_with_date.loc[scaled_preprocessed_load_data_with_date.index[-1]]['date'],
+            "%Y-%m-%d"):
         input_data = X_test[-1]
         num_days = 15
     else:
@@ -156,8 +161,9 @@ def get_per_hour_data(start_date = (2006, 1, 2), end_date =(2006, 3, 20),zone_id
     outputs = predict_future(model, input_data, num_days)
     return outputs
 
-def get_per_day_prediction_data(start_date=(2008, 6, 30), end_date=(2008, 7, 20),zone_id=3):
-    outputs = get_per_hour_data(start_date, end_date,zone_id=zone_id)
+
+def get_per_day_prediction_data(start_date, end_date, zone_id=3):
+    outputs = get_per_hour_data(start_date, end_date, zone_id=zone_id)
     per_day = [numpy.sum(day_data) for day_data in outputs]
     st = datetime(start_date[0], start_date[1], start_date[2])
     end = datetime(end_date[0], end_date[1], end_date[2])
@@ -170,8 +176,11 @@ def get_per_day_prediction_data(start_date=(2008, 6, 30), end_date=(2008, 7, 20)
     return per_day, dates
 
 
-def get_one_day_load_prediction(date=(2008, 6, 30),zone_id=3):
-    load, date =get_per_day_prediction_data(start_date=date,end_date=date,zone_id=zone_id)
+def get_one_day_load_prediction(date, zone_id=3):
+    st_date = datetime(day=date[2], month=date[1], year=date[0])
+    end_date = st_date + timedelta(days=5)
+    end = [end_date.year, end_date.month, end_date.day]
+    load, date = get_per_day_prediction_data(start_date=date, end_date=end, zone_id=zone_id)
     return load[0]
 
 
@@ -183,18 +192,20 @@ app = Flask(__name__)
 def forcasts():
     start_date = (2006, 1, 2)
     end_date = (2006, 1, 17)
-    data, dates = get_per_day_prediction_data(start_date,end_date)
+    data, dates = get_per_day_prediction_data(start_date, end_date)
     next_day_load = get_one_day_load_prediction()
-    return render_template('forcasts.html', load_data=zip(data, dates), next_day_load=next_day_load,next_day='2008-6-30')
+    return render_template('forcasts.html', load_data=zip(data, dates), next_day_load=next_day_load,
+                           next_day='2008-6-30')
 
 
 @app.route('/forcast_range/', methods=['POST'])
 def forcast_range():
     from_date = [int(i) for i in request.form['from_date'].split('-')]
     to_date = [int(i) for i in request.form['to_date'].split('-')]
-    data, dates = get_per_day_prediction_data(from_date,to_date)
+    data, dates = get_per_day_prediction_data(from_date, to_date)
     next_day_load = get_one_day_load_prediction()
-    return render_template('forcasts.html', load_data=zip(data, dates), next_day_load=next_day_load,next_day='2008-6-30')
+    return render_template('forcasts.html', load_data=zip(data, dates), next_day_load=next_day_load,
+                           next_day='2008-6-30')
 
 
 @app.route('/forcast_one_day/', methods=['POST'])
@@ -208,18 +219,28 @@ def forcast_one_day():
     print(load)
     return jsonify(load=str(load))
 
+
+@app.route('/hourly_forcast/<date>', methods=['GET'])
+def get_24_hrs_prediction(date):
+    date = [int(i) for i in date.split('-')]
+    print(get_per_hour_data(date, date))
+    hrs_data = get_per_hour_data(date, date)[0].tolist()[0]
+    return render_template('hour_forecast.html', hrs_data=hrs_data)
+
+
 @app.route('/home/', methods=['GET'])
 def home():
     print("home")
     return render_template('home.html')
 
+
 if __name__ == '__main__':
     window_size = 10
     X, y = window_transform_series(get_preprocessed_load_data(zone_id=3), window_size)
-    train_test_split = int(numpy.ceil(4*len(y)/float(5)))   # set the split point
-    X_train = X[:train_test_split,:]
+    train_test_split = int(numpy.ceil(4 * len(y) / float(5)))  # set the split point
+    X_train = X[:train_test_split, :]
     y_train = y[:train_test_split]
-    X_test = X[train_test_split:,:]
+    X_test = X[train_test_split:, :]
     y_test = y[train_test_split:]
     X_train = numpy.asarray(numpy.reshape(X_train, (X_train.shape[0], window_size, 24)))
     X_test = numpy.asarray(numpy.reshape(X_test, (X_test.shape[0], window_size, 24)))
@@ -228,8 +249,10 @@ if __name__ == '__main__':
 
     numpy.random.seed(0)
     model = Sequential()
-    model.add(LSTM(100, input_shape=(X_train.shape[1], X_train.shape[2]),return_sequences=True, dropout=0.15, recurrent_dropout=0.1))
-    model.add(LSTM(100, input_shape=(X_train.shape[1], X_train.shape[2]), dropout=0.1,return_sequences=True, recurrent_dropout=0.1))
+    model.add(LSTM(100, input_shape=(X_train.shape[1], X_train.shape[2]), return_sequences=True, dropout=0.15,
+                   recurrent_dropout=0.1))
+    model.add(LSTM(100, input_shape=(X_train.shape[1], X_train.shape[2]), dropout=0.1, return_sequences=True,
+                   recurrent_dropout=0.1))
     model.add(LSTM(100, input_shape=(X_train.shape[1], X_train.shape[2]), dropout=0.1, recurrent_dropout=0.1))
     model.add(Dense(24))
     optimizer = keras.optimizers.RMSprop(lr=0.002, rho=0.9, epsilon=1e-08, decay=0.0)
