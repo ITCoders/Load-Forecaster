@@ -107,13 +107,16 @@
                     Date: {{ next_day }}
                 </p>
 
-                <form>
+                <form id="one_day_load" method="post" action={{ url_for('forcast_one_day') }}>
                     <div class="form-group">
                         <label for="date-picker">
                             Change Date
                         </label>
-                        <input type="date" id="date-picker" class="form-control" placeholder="">
+                        <input name="day" type="date" id="date-picker" class="form-control" placeholder="">
                     </div>
+                    <button class="form-control">
+                        Change Date Range
+                    </button>
                 </form>
             </div>
 
@@ -160,6 +163,30 @@ google.charts.load('current', {'packages':['corechart']});
     $(document).ready(function() {
     $('.js-example-basic-single').select2();
 });
+    $(document).ready(function () {
+      $('#one_day_load').submit(function (e) {
+          e.preventDefault();
+          var frm = $('#one_day_load');
+          console.log(frm)
+          var data = {};
+          $.each(this, function(i, v){
+              var input = $(v);
+              data[input.attr("name")] = input.val();
+              delete data["undefined"];
+          });
+          console.log(data);
+          $.ajax({
+            contentType:"application/json",
+            type:frm.attr("method"),
+            url:frm.attr("action"),
+            dataType:'json',
+            data:JSON.stringify(data),
+            success:function(data) {
+                $('#load-estimate').text("Usage: " +data.load + "KW");
+            }
+    });
+      })
+    })
 </script>
 </body>
 </html>
