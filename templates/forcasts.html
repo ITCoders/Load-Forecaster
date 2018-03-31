@@ -98,15 +98,11 @@
         <div class="col-xs-12 col-md-6 col-sm-6" id="form-layout">
             <div class="col-xs-12 col-md-6 col-sm-6" id="cab-book-msg">
                 <h1 id="load-estimate">
-                    Usage: {{ next_day_load }}KW
+                    Usage: {{ next_day_load }}MU
                 </h1>
                 <p id="estimate-place">
                     Place: Gandhinagar
                 </p>
-                <p id="estimate-date">
-                    Date: {{ next_day }}
-                </p>
-
                 <form id="one_day_load" method="post" action={{ url_for('forcast_one_day') }}>
                     <div class="form-group">
                         <label for="date-picker">
@@ -115,9 +111,11 @@
                         <input name="day" type="date" id="date-picker" class="form-control" placeholder="">
                     </div>
                     <button class="form-control">
-                        Change Date Range
+                        Change Date
                     </button>
                 </form>
+                <br>
+                <br>
                 <button><a href="/hourly_forcast/2005-1-30"> See hourly data</a></button>
             </div>
 
@@ -139,13 +137,13 @@ google.charts.load('current', {'packages':['corechart']});
       function drawChart() {
 
     var data = google.visualization.arrayToDataTable([
-          ['Date', 'Predicted'],
+          ['Date', 'Predicted', 'Actual'],
         {% for load in load_data %}
-        [ '{{ load[1] }}',{{ load[0]}}],
+        [ '{{ load[1] }}',{{ load[0]}}, {{ load[2] }}],
         {% endfor %}
 
       ]);
-    var options = {'title':'Load History of Gandhinagar',
+    var options = {'title':'Load Prediction of Gandhinagar',
                     // 'height': chart_height,
                     // 'width': chart_width,
                     'animation':{

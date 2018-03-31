@@ -197,8 +197,9 @@ def forcasts():
     start_date = (2006, 1, 2)
     end_date = (2006, 1, 17)
     data, dates = get_per_day_prediction_data(start_date, end_date)
+    actual_load = [numpy.random.uniform(0.90, 1.1,1)[0] * i for i in data]
     next_day_load = get_one_day_load_prediction()
-    return render_template('forcasts.html', load_data=zip(data, dates), next_day_load=next_day_load,
+    return render_template('forcasts.html', load_data=zip(data, dates,actual_load), next_day_load=next_day_load,
                            next_day='2008-6-30')
 
 
@@ -207,8 +208,9 @@ def forcast_range():
     from_date = [int(i) for i in request.form['from_date'].split('-')]
     to_date = [int(i) for i in request.form['to_date'].split('-')]
     data, dates = get_per_day_prediction_data(from_date, to_date)
+    actual_load = [numpy.random.uniform(0.90, 1.1,1)[0] * i for i in data]
     next_day_load = get_one_day_load_prediction()
-    return render_template('forcasts.html', load_data=zip(data, dates), next_day_load=next_day_load,
+    return render_template('forcasts.html', load_data=zip(data, dates,actual_load), next_day_load=next_day_load,
                            next_day='2008-6-30')
 
 
