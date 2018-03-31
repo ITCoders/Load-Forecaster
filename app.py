@@ -176,7 +176,7 @@ def get_per_day_prediction_data(start_date, end_date, zone_id=3):
     return per_day, dates
 
 
-def get_one_day_load_prediction(date, zone_id=3):
+def get_one_day_load_prediction(date=(2008,6,30), zone_id=3):
     st_date = datetime(day=date[2], month=date[1], year=date[0])
     end_date = st_date + timedelta(days=5)
     end = [end_date.year, end_date.month, end_date.day]
@@ -188,7 +188,7 @@ def get_one_day_load_prediction(date, zone_id=3):
 app = Flask(__name__)
 
 
-@app.route('/forcasts/', methods=['GET'])
+@app.route('/', methods=['GET'])
 def forcasts():
     start_date = (2006, 1, 2)
     end_date = (2006, 1, 17)
@@ -223,15 +223,17 @@ def forcast_one_day():
 @app.route('/hourly_forcast/<date>', methods=['GET'])
 def get_24_hrs_prediction(date):
     date = [int(i) for i in date.split('-')]
-    print(get_per_hour_data(date, date))
-    hrs_data = get_per_hour_data(date, date)[0].tolist()[0]
+    st_date = datetime(day=date[2], month=date[1], year=date[0])
+    end_date = st_date + timedelta(days=5)
+    end = [end_date.year, end_date.month, end_date.day]
+    hrs_data = get_per_hour_data(date, end)[0].tolist()[0]
     return render_template('hour_forecast.html', hrs_data=hrs_data)
 
 
-@app.route('/home/', methods=['GET'])
-def home():
-    print("home")
-    return render_template('home.html')
+# @app.route('/home/', methods=['GET'])
+# def home():
+#     print("home")
+#     return render_template('home.html')
 
 
 if __name__ == '__main__':
